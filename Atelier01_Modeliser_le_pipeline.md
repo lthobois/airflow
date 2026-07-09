@@ -28,7 +28,46 @@ Installez Visual Studio Code depuis un terminal Windows :
 winget install Microsoft.VisualStudioCode
 ```
 
-Ouvrez Debian, puis clonez le dépôt des ateliers :
+Ouvrez Debian, puis installez Docker Engine et Docker Compose :
+
+```bash
+sudo apt update
+sudo apt install -y ca-certificates curl git
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+sudo tee /etc/apt/sources.list.d/docker.sources > /dev/null <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/debian
+Suites: $(. /etc/os-release && echo "$VERSION_CODENAME")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+Démarrez Docker et autorisez l'utilisateur courant à lancer Docker sans `sudo` :
+
+```bash
+sudo service docker start
+sudo usermod -aG docker "$USER"
+```
+
+Fermez puis rouvrez Debian pour que le groupe `docker` soit pris en compte.
+
+Vérifiez l'installation :
+
+```bash
+docker --version
+docker compose version
+docker run hello-world
+```
+
+Clonez ensuite le dépôt des ateliers :
 
 ```bash
 mkdir -p ~/PLB/Airflow

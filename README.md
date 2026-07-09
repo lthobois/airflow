@@ -51,13 +51,13 @@ Base PostgreSQL métier :
 
 ## Ordre des ateliers
 
-1. `Atelier01_Modeliser_le_pipeline.md`
-2. `Atelier02_Installer_Airflow_Docker.md`
-3. `Atelier03_Creer_un_premier_DAG.md`
-4. `Atelier04_Ordonnancement_et_dependances.md`
-5. `Atelier05_Monitoring_et_debug.md`
-6. `Atelier06_Workflow_avance.md`
-7. `Atelier07_XCom_et_TaskFlow.md`
-8. `Atelier08_PostgreSQL_et_API_locale.md`
-9. `Atelier09_Bonnes_pratiques_production.md`
-10. `Atelier10_Synthese_pipeline_complet.md`
+1. [Atelier 01 - Modeliser le pipeline](Atelier01_Modeliser_le_pipeline.md)
+2. [Atelier 02 - Installer Airflow avec Docker](Atelier02_Installer_Airflow_Docker.md)
+3. [Atelier 03 - Creer un premier DAG](Atelier03_Creer_un_premier_DAG.md)
+4. [Atelier 04 - Ordonnancement et dependances](Atelier04_Ordonnancement_et_dependances.md)
+5. [Atelier 05 - Monitoring et debug](Atelier05_Monitoring_et_debug.md)
+6. [Atelier 06 - Workflow avance](Atelier06_Workflow_avance.md)
+7. [Atelier 07 - XCom et TaskFlow](Atelier07_XCom_et_TaskFlow.md)
+8. [Atelier 08 - PostgreSQL et API locale](Atelier08_PostgreSQL_et_API_locale.md)
+9. [Atelier 09 - Bonnes pratiques de production](Atelier09_Bonnes_pratiques_production.md)
+10. [Atelier 10 - Synthese pipeline complet](Atelier10_Synthese_pipeline_complet.md)
