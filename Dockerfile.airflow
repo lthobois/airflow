@@ -1,0 +1,12 @@
+FROM apache/airflow:3.3.0
+
+ARG AIRFLOW_VERSION=3.3.0
+ARG PYTHON_VERSION=3.13
+ARG CONSTRAINT_URL=https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt
+
+RUN pip install --no-cache-dir \
+    --constraint "${CONSTRAINT_URL}" \
+    apache-airflow-providers-common-sql \
+    apache-airflow-providers-postgres \
+    apache-airflow-providers-http \
+    pandas

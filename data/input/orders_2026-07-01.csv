@@ -1,0 +1,7 @@
+order_id,customer_id,order_date,country,amount,status
+ORD-1001,CUST-001,2026-07-01,FR,120.50,paid
+ORD-1002,CUST-002,2026-07-01,BE,89.90,paid
+ORD-1003,CUST-003,2026-07-01,FR,42.00,cancelled
+ORD-1004,CUST-004,2026-07-01,CH,310.20,paid
+ORD-1005,CUST-005,2026-07-01,FR,15.00,paid
+

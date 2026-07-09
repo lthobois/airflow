@@ -1,0 +1,106 @@
+x-airflow-common: &airflow-common
+  build:
+    context: .
+    dockerfile: Dockerfile.airflow
+  image: plb-airflow:3.3.0
+  environment: &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__CORE__AUTH_MANAGER: airflow.api_fastapi.auth.managers.simple.simple_auth_manager.SimpleAuthManager
+    AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: airflow:admin
+    AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_PASSWORDS_FILE: /opt/airflow/config/passwords.json
+    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-apiserver:8080/execution/
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__FERNET_KEY: "mM4a3Kpdr7tGyX7YNRJR3dZmti8i0EnU2O28S7J4R1o="
+    AIRFLOW__API__SECRET_KEY: "training-webserver-secret"
+    AIRFLOW__API_AUTH__JWT_SECRET: "training-jwt-secret"
+    AIRFLOW__API_AUTH__JWT_ISSUER: "airflow"
+    AIRFLOW_CONN_ECOMMERCE_POSTGRES: postgresql://ecommerce:ecommerce@business-postgres:5432/ecommerce
+    AIRFLOW_CONN_ECOMMERCE_API: http://ecommerce-api:8000
+    AIRFLOW_VAR_INPUT_DIR: /opt/airflow/data/input
+    AIRFLOW_VAR_OUTPUT_DIR: /opt/airflow/data/output
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./data:/opt/airflow/data
+    - ./sql:/opt/airflow/sql
+    - ./config:/opt/airflow/config
+    - airflow-logs:/opt/airflow/logs
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on:
+    postgres:
+      condition: service_healthy
+    business-postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - airflow-db:/var/lib/postgresql/data
+
+  business-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ecommerce
+      POSTGRES_PASSWORD: ecommerce
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "ecommerce"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - business-db:/var/lib/postgresql/data
+      - ./sql/init_business_db.sql:/docker-entrypoint-initdb.d/init_business_db.sql:ro
+
+  ecommerce-api:
+    build:
+      context: ./api
+    ports:
+      - "8000:8000"
+
+  airflow-init:
+    <<: *airflow-common
+    environment:
+      <<: *airflow-common-env
+      _AIRFLOW_DB_MIGRATE: "true"
+    command:
+      - bash
+      - -c
+      - |
+        mkdir -p /opt/airflow/logs /opt/airflow/dags /opt/airflow/data/input /opt/airflow/data/output
+        airflow pools set ecommerce_api_pool 2 "Limit calls to the local ecommerce API"
+
+  airflow-apiserver:
+    <<: *airflow-common
+    command: api-server
+    ports:
+      - "8080:8080"
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+
+  airflow-dag-processor:
+    <<: *airflow-common
+    command: dag-processor
+
+  airflow-triggerer:
+    <<: *airflow-common
+    command: triggerer
+
+volumes:
+  airflow-db:
+  business-db:
+  airflow-logs:
