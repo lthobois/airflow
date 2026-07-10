@@ -59,7 +59,7 @@ airflow db clean \
   --clean-before-timestamp "$(date -u -d '90 days ago' '+%Y-%m-%dT%H:%M:%S+00:00')" \
   --dry-run
   
-###Nettoyage de la BDD
+### Nettoyage de la BDD
 airflow db clean \
   --clean-before-timestamp "$(date -u -d '90 days ago' '+%Y-%m-%dT%H:%M:%S+00:00')" \
   --skip-archive \
