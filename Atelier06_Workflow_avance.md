@@ -87,6 +87,16 @@ with DAG(
 PY
 ```
 
+DAG : ce DAG introduit des fonctionnalités avancées : sensor, branchement conditionnel, Task Group et dynamic task mapping. Il faut mettre en avant la lisibilité du graphe et la capacité à créer des tâches dynamiquement à partir des données.
+- `start` : marque le début du workflow.
+- `wait_for_orders_file` : attend la présence du fichier CSV avec un `FileSensor`.
+- `branch_on_paid_orders` : choisit la suite du traitement avec un `BranchPythonOperator`.
+- `skip_processing` : représente le chemin ignoré lorsqu'aucune commande payée n'est disponible.
+- `transform_orders.filter_paid_orders` : filtre les commandes payées et écrit un fichier de sortie.
+- `transform_orders.list_countries` : lit le fichier filtré et retourne la liste des pays présents.
+- `transform_orders.print_country` : crée une tâche mappée par pays avec le dynamic task mapping.
+- `end` : termine le workflow en acceptant qu'une des branches ait été ignorée.
+
 Puis patientez en vérifiant que le DAG est connu d'Airflow :
 
 ```bash

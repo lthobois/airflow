@@ -59,6 +59,14 @@ with DAG(
 PY
 ```
 
+DAG : ce DAG montre comment Airflow orchestre des dépendances simples, du parallélisme et une planification quotidienne. Il faut mettre en avant `schedule`, `catchup=False`, les retries et la synchronisation de deux branches parallèles.
+- `start` : marque le début du workflow avec un `EmptyOperator`.
+- `check_input_file` : vérifie que le fichier CSV attendu existe avec une commande shell `test -f`.
+- `count_lines` : compte les lignes du fichier avec `wc -l`.
+- `show_header` : affiche l'en-tête du CSV avec `head -n 1`.
+- `validate_file` : synchronise les deux contrôles précédents et confirme que le fichier est validé.
+- `end` : marque la fin du workflow.
+
 ## 2. Attendre la détection du DAG
 
 Vérifiez que le fichier est visible depuis le conteneur Airflow :

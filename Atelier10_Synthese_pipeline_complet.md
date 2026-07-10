@@ -2,8 +2,6 @@
 
 Objectif : assembler le pipeline final du fil rouge.
 
-Durée indicative : 90 minutes.
-
 ## 1. Créer le DAG final
 
 ```bash
@@ -45,8 +43,8 @@ def ecommerce_final_pipeline():
 
     @task
     def build_config() -> dict:
-        input_dir = Variable.get("input_dir", default_var="/opt/airflow/data/input")
-        output_dir = Variable.get("output_dir", default_var="/opt/airflow/data/output")
+        input_dir = Variable.get("input_dir")
+        output_dir = Variable.get("output_dir")
         return {
             "batch_id": "orders_2026-07-01",
             "input_file": f"{input_dir}/orders_2026-07-01.csv",
@@ -166,6 +164,16 @@ def ecommerce_final_pipeline():
 ecommerce_final_pipeline()
 PY
 ```
+
+DAG : ce DAG assemble le pipeline final du fil rouge. Il faut mettre en avant l'enchaînement complet : configuration, attente du fichier, validation, transformation, chargement PostgreSQL, transmission XCom et notification API.
+- `start` : marque le début du workflow final.
+- `build_config` : construit les chemins et l'identifiant du batch à partir des variables Airflow.
+- `wait_for_orders_file` : attend le fichier CSV avec un `FileSensor`.
+- `prepare_orders.validate_schema` : vérifie que le fichier contient les colonnes requises.
+- `prepare_orders.filter_paid_orders` : filtre les commandes payées et écrit le fichier `final_paid_orders.csv`.
+- `load_orders.load_paid_orders_to_postgres` : vide les tables, charge les commandes payées, insère le résumé du batch et retourne ce résumé.
+- `notify_api` : envoie le résumé du batch à l'API locale avec `HttpOperator`.
+- `end` : marque la fin du pipeline complet.
 
 ## 2. Déclencher le DAG final
 

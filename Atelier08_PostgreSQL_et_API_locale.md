@@ -2,8 +2,6 @@
 
 Objectif : intégrer Airflow avec PostgreSQL et une API HTTP locale.
 
-Durée indicative : 75 minutes.
-
 ## 1. Vérifier les connexions
 
 Les connexions sont injectées par variables d'environnement dans `docker-compose.yml`.
@@ -117,6 +115,11 @@ def ecommerce_postgres_api():
 ecommerce_postgres_api()
 PY
 ```
+
+DAG : ce DAG connecte Airflow à deux systèmes externes : PostgreSQL et une API HTTP locale. Il faut mettre en avant les connexions Airflow, le chargement en base, l'utilisation d'un XCom pour transmettre le résumé et l'appel API final.
+- `clean_tables` : vide les tables métier avec `SQLExecuteQueryOperator`.
+- `load_paid_orders` : lit le CSV, filtre les commandes payées, charge `raw_orders`, insère un résumé dans `order_batches` et retourne ce résumé.
+- `notify_api` : appelle l'API locale avec `HttpOperator` en utilisant le résumé retourné par `load_paid_orders`.
 
 ## 3. Déclencher le DAG
 

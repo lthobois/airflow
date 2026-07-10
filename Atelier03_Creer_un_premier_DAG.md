@@ -44,6 +44,12 @@ with DAG(
 PY
 ```
 
+DAG : ce premier DAG sert à comprendre la structure minimale d'un workflow Airflow : un début, deux actions simples et une fin. Il faut mettre en avant la déclaration du DAG, les operators utilisés et la dépendance linéaire entre les tâches.
+- `start` : marque le début logique du workflow avec un `EmptyOperator`.
+- `list_input_files` : liste les fichiers disponibles dans `/opt/airflow/data/input` avec un `BashOperator`.
+- `explain_pipeline` : exécute une fonction Python simple avec un `PythonOperator`.
+- `end` : marque la fin logique du workflow avec un `EmptyOperator`.
+
 ## 2. Attendre la détection du DAG
 
 ```bash
@@ -124,4 +130,3 @@ Vous devez savoir :
 - comment nommer un `dag_id` ;
 - comment créer une dépendance avec `>>` ;
 - comment consulter les logs d'une tâche.
-

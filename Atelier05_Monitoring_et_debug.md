@@ -39,6 +39,12 @@ with DAG(
 PY
 ```
 
+DAG : ce DAG sert à apprendre le diagnostic d'une erreur contrôlée dans Airflow. Il faut mettre en avant la lecture des états, des logs, et la relance d'une tâche après correction.
+- `start` : marque le début du workflow.
+- `check_existing_file` : vérifie l'existence du fichier CSV réel avec `test -f`.
+- `check_missing_file` : vérifie volontairement un fichier inexistant pour provoquer une erreur pédagogique.
+- `end` : ne s'exécute que si les contrôles précédents réussissent.
+
 Puis patientez en vérifiant que le DAG est connu d'Airflow :
 
 ```bash
@@ -117,4 +123,3 @@ Vous devez savoir :
 - distinguer un échec de DAG et un échec de tâche ;
 - corriger une erreur simple ;
 - relancer une tâche sans relancer tout le DAG.
-
