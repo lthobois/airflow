@@ -49,6 +49,22 @@ Base PostgreSQL métier :
 - User : `ecommerce`
 - Password : `ecommerce`
 
+## Commandes utiles
+
+### Rafraichissement des DAGs
+docker compose exec airflow-scheduler airflow dags reserializev
+
+### Simulation du nettoyage de la BDD
+airflow db clean \
+  --clean-before-timestamp "$(date -u -d '90 days ago' '+%Y-%m-%dT%H:%M:%S+00:00')" \
+  --dry-run
+  
+###Nettoyage de la BDD
+airflow db clean \
+  --clean-before-timestamp "$(date -u -d '90 days ago' '+%Y-%m-%dT%H:%M:%S+00:00')" \
+  --skip-archive \
+  --yes
+
 ## Ordre des ateliers
 
 1. [Atelier 01 - Modeliser le pipeline](Atelier01_Modeliser_le_pipeline.md)
